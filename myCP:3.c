@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#define MAX 1024
 
 static int copyFILE_TO_FILE(char* source, char* destination);
 static int copyFILE_TO_DIR(char* source, char* destination);
@@ -21,6 +22,12 @@ int main(int argc, char *argv[])
 	char* source = argv[--argc];
 	argv[argc] = NULL;
 	int r = stat(destination, &destination_stat);
+
+	if (r < 0) {
+        fputs ("Stat error",stderr); 
+        exit(1);
+    }
+
 	if (r == -1 || !S_ISDIR(destination_stat.st_mode)) {
 		type = FILE_TO_FILE;
 	} else
@@ -37,7 +44,19 @@ int main(int argc, char *argv[])
 static int copyFILE_TO_FILE(char* source, char* destination)
 {
 	FILE* copyFrom = fopen(source,"r");
+
+	if (copyFrom == NULL) {
+        fputs ("Copy_from file open error",stderr); 
+        exit(2);
+    }
+
     FILE* copyTo = fopen(destination,"w");
+
+    if (copyTo == NULL) {
+        fputs ("Copy_to file open error",stderr); 
+        exit(3);
+    }
+
     for (;;) {
         int caractereActuel = fgetc(copyFrom);
         if (caractereActuel != EOF) {
@@ -54,9 +73,27 @@ static int copyFILE_TO_FILE(char* source, char* destination)
 static int copyFILE_TO_DIR(char* source, char* destination)
 {
 	FILE* copyFrom = fopen(source,"r");
+
+	if (copyFrom == NULL) {
+        fputs ("Copy_from file open error",stderr); 
+        exit(2);
+    }
+
 	char newFileName[MAX] = {0};
-	sprintf(newFileName, "%s/%s", *destination, copyFrom);
+	int r = sprintf(newFileName, "%s/%s", *destination, copyFrom);
+
+	if (r < 0) {
+        fputs ("Sprintf error",stderr); 
+        exit(4);
+    }
+
 	FILE* copyTo  = fopen(newFileName, "w");
+
+	if (copyTo == NULL) {
+        fputs ("Copy_to file open error",stderr); 
+        exit(3);
+    }
+
 	for (;;) {
         int caractereActuel = fgetc(copyFrom);
         if (caractereActuel != EOF) {
