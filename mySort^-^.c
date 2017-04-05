@@ -113,6 +113,10 @@ int main(int argc, char *argv[])
 		case 'i': // file or std input
 			iflag = 1;
 			input_file = fopen(optarg, "rw");
+			if (input_file == NULL) {
+        		fputs ("Input_file open error",stderr); 
+        		exit(1);
+    		}
 			break;
 		default:
 			break;
