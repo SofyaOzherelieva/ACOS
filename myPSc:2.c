@@ -75,6 +75,11 @@ char* showStat(char* pid){
     strncat (nameStat, "/stat",5);
    	process = fopen( nameStat,"r");
 
+   	if (process == NULL) {
+        fputs ("File open error",stderr); 
+        exit(2);
+    }
+
    	// Считаем кол-во символов в строке stat.
    	int current = 0;
    	int number = 0;
@@ -82,9 +87,11 @@ char* showStat(char* pid){
 	    number+=1;
 	}	
 	rewind(process);
+
 	char* state = (char* )malloc((number + 1)*sizeof(char));
 
    	fgets(state, number + 1, process);
+
    	free(nameStat);
    	fclose(process);
    	return state;
@@ -169,6 +176,12 @@ int main( )
 {
 	printf(" %4s %2s %13s %2s \n", "PID", "TTY", "TIME", "CMD");
 	DIR *proc = opendir( "/proc" );
+
+	if (proc == NULL) {
+        fputs ("DIR open error",stderr); 
+        exit(1);
+    }
+
 	sortDir(proc);
 
 	readEachFile( proc );
