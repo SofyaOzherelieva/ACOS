@@ -8,7 +8,7 @@
 
 enum operation {FILE_TO_FILE, FILE_TO_DIR};
 
-static int copyFILE_TO_FILE(char* source, char* destination) {
+int copyFILE_TO_FILE(char* source, char* destination) {
     FILE* copyFrom = fopen(source, "r");
 
     if (copyFrom == NULL) {
@@ -35,7 +35,7 @@ static int copyFILE_TO_FILE(char* source, char* destination) {
     return 0;
 }
 
-static int copyFILE_TO_DIR(char* source, char* destination) {
+int copyFILE_TO_DIR(char* source, char* destination) {
     FILE* copyFrom = fopen(source, "r" );
 
     if (copyFrom == NULL) {
