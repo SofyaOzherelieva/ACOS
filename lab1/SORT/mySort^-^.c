@@ -8,53 +8,25 @@
 
 #define MAXLENGTH 4096
 
-int str_cmp(const char* str1, const char* str2) {
-    int min_len = 0;
-    if (strlen(str1) > strlen(str2)) {
-        min_len = strlen(str2);
-    } else {
-        min_len = strlen(str1);
-    }
-    int i = 0;
-    for (i = 0; i < min_len; i++) {
-        if (str1[i] > str2[i]) {
-            return -1;
-        }
-        if (str1[i] < str2[i]) {
-            return 1;
-        }
-    }
-    if (strlen(str1) > strlen(str2)) {
-        return 1;
-    }
-    if (strlen(str1) < strlen(str2)) {
-        return -1;
-    }
-    return 0;
-}
-
 
 static sort(int iflag, FILE* input_file, int lflag, int rflag) {
     int j = 0;
     int sizeof_text = 0;
     int i = 0;
-    char* text[MAXLENGTH];
-    char string[MAXLENGTH];
+    char *text[MAXLENGTH];
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
     // Input.
     if (iflag == 0) {
-        for (i = 0; i < MAXLENGTH;) {
-            if (fgets(string, sizeof(string), stdin) == NULL) {
-                break;
-            }
-            text[i++] = strdup(string);
+        while((read = getline(&line, &len, stdin)) != -1) {
+            text[i++] = strdup(line);
         }
+        free(line);
         sizeof_text = i;
     } else {
-        for (i = 0; i < MAXLENGTH;) {
-            if (fgets(string, sizeof(string), input_file) == NULL) {
-                break;
-            }
-            text[i++] = strdup(string);
+        while((read = getline(&line, &len, input_file)) != -1) {
+            text[i++] = strdup(line);
         }
         sizeof_text = i;
     }
@@ -63,7 +35,7 @@ static sort(int iflag, FILE* input_file, int lflag, int rflag) {
     if (lflag == 1) {
         for (i = 0; i < sizeof_text; i++) {
             for (j = i; j < sizeof_text; j++) {
-                if (str_cmp(text[i], text[j]) < 0) {
+                if (strcmp(text[i], text[j]) < 0) {
                     char* tmp = text[i];
                     text[i] = text[j];
                     text[j] = tmp;
