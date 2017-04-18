@@ -14,29 +14,23 @@ static sort(int iflag, FILE* input_file, int lflag, int rflag) {
     int sizeof_text = 0;
     int i = 0;
     char *text[MAXLENGTH];
-    char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    // Input.
-    if (iflag == 0) {
-        while((read = getline(&line, &len, stdin)) != -1) {
-            text[i++] = strdup(line);
-        }
-        free(line);
-        sizeof_text = i;
-    } else {
-        while((read = getline(&line, &len, input_file)) != -1) {
-            text[i++] = strdup(line);
-        }
-        free(line);
-        sizeof_text = i;
+    int reverse_multiplier = 1;
+    while((read = getline(&text[i], &len, input_file)) != -1) {
+        i++;
+    }
+    sizeof_text = i;
+
+    if(rflag == 1) {
+    	reverse_multiplier = -1;
     }
 
     // lexicographic
     if (lflag == 1) {
         for (i = 0; i < sizeof_text; i++) {
             for (j = i; j < sizeof_text; j++) {
-                if (strcmp(text[i], text[j]) < 0) {
+                if ((strcmp(text[i], text[j]) * reverse_multiplier) > 0) {
                     char* tmp = text[i];
                     text[i] = text[j];
                     text[j] = tmp;
@@ -46,7 +40,7 @@ static sort(int iflag, FILE* input_file, int lflag, int rflag) {
     }
 
     // reverse the result of comparisons
-    if (rflag == 1) {
+    if (rflag == 1 && lflag == 0) {
         for (i = 0; i < sizeof_text; i++) {
             if (sizeof_text - 1 - i > i) {
                 char* tmp = text[sizeof_text - 1 - i];
@@ -92,6 +86,6 @@ int main(int argc, char *argv[]) {
         sort(iflag, input_file, lflag, rflag);
         fclose(input_file);
     } else {
-        sort(iflag, input_file, lflag, rflag);
+        sort(iflag, stdin, lflag, rflag);
     }
 }
