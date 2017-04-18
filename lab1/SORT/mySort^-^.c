@@ -28,6 +28,7 @@ static sort(int iflag, FILE* input_file, int lflag, int rflag) {
         while((read = getline(&line, &len, input_file)) != -1) {
             text[i++] = strdup(line);
         }
+        free(line);
         sizeof_text = i;
     }
 
