@@ -41,7 +41,7 @@ int generateKickMessage(char* message, int number_of_str, char* text[]) {
     ssize_t read;
     char id[MIN_BUF];
     //printf("1\n");
-    while (scanf("%d", &user_id) == -1){
+    while (scanf("%d", &user_id) == -1) {
         printf("Invalid input, please try again\n");
     }
     //printf("user_id: %d\n", user_id);
@@ -52,14 +52,14 @@ int generateKickMessage(char* message, int number_of_str, char* text[]) {
 
     memcpy(text[1], id, 4);
     /*printf("text[1]\n");
-    for(i = 0; i < 4; i++){
+    for (i = 0; i < 4; i++) {
         printf("%X ", text[1][i]);
     }*/
     text[1][5] = 0;
     number_of_str += 1;
 
     while ((read = getline(&text[number_of_str], &len, stdin)) != -1) {
-        while(text[number_of_str][0] == '\n'){
+        while (text[number_of_str][0] == '\n') {
             getline(&text[number_of_str], &len, stdin);
         }
         number_of_str++;
@@ -68,7 +68,7 @@ int generateKickMessage(char* message, int number_of_str, char* text[]) {
     size_t message_size = clientConstructingMessage(message, text, 4);
 
     /*printf("\ngenerateKickMessage:\n");
-    for ( i = 0; i < message_size; i++){
+    for ( i = 0; i < message_size; i++) {
         printf("%X ", message[i]);
     }*/
     return message_size;
@@ -77,7 +77,7 @@ int generateKickMessage(char* message, int number_of_str, char* text[]) {
 int generateHistoryMessage(char* message) {
     int length = 0;
     int number_of_mes;
-    while (scanf("%d", &number_of_mes) == -1){
+    while (scanf("%d", &number_of_mes) == -1) {
         printf("Invalid input, please try again.\n");
     }
     number_of_mes = min(number_of_mes, MAXHISTORY);
@@ -97,7 +97,7 @@ void* sendMessage(void* socket_desc) {
     int socket_id = *(int*)socket_desc;
     int j;
     int i;
-    for(;;) {
+    for (;;) {
         //sleep(10);
         printf("\nEnter text to send\n");
         char message[MAXLENGTH]; 
@@ -110,35 +110,35 @@ void* sendMessage(void* socket_desc) {
         int number_of_str = 0;
 
         // Считывает следующую пустую строку, потому что делаем break
-        while(number_of_str == 0){
+        while (number_of_str == 0) {
             while ((read = getline(&text[number_of_str], &len, stdin)) != -1) {
-                if(text[0][0] == '\n'){
+                if (text[0][0] == '\n') {
                     getline(&text[number_of_str], &len, stdin);
                 }
-                if(strlen(text[number_of_str]) > 65535) {
+                if (strlen(text[number_of_str]) > 65535) {
                     printf("Invalid message, please try again\n");
                     number_of_str -= 1;
                 }
-                if(strlen(text[0]) != 2) {
+                if (strlen(text[0]) != 2) {
                     printf("Invalid status, please try again\n");
                     number_of_str -= 1;
                 } else {
-                    if(text[0][0] == 'h' || text[0][0] == 'k'){
+                    if (text[0][0] == 'h' || text[0][0] == 'k') {
                         number_of_str += 1;
                         break;
                     }
                 }
                 number_of_str += 1;
             }
-            if(number_of_str == 0) {
+            if (number_of_str == 0) {
                 printf("Invalid message, please try again\n");
             }
         }
 
-        if(text[0][0] == 'h'){
+        if (text[0][0] == 'h') {
             messageSize = generateHistoryMessage(message);
         } else {
-            if(text[0][0] == 'k'){
+            if (text[0][0] == 'k') {
                 messageSize = generateKickMessage(message, number_of_str, text);
             } else {
                 messageSize = clientConstructingMessage(message, text, number_of_str);
@@ -146,7 +146,7 @@ void* sendMessage(void* socket_desc) {
         }
 
         /*printf("\nsendClientMessage:\n");
-        for(i = 0; i < messageSize; i++) {
+        for (i = 0; i < messageSize; i++) {
             printf("%X ", message[i]);
         }
 
@@ -173,7 +173,7 @@ void readServerStrH(int length, char* string, CServerStr* server_str) {
     int j = 0;
     int total_lenght = 0;
     /*printf("Reading from server:\n");
-    for(j = 0; j < length; j++) {
+    for (j = 0; j < length; j++) {
         printf("%X ", string[j]);
     }
     printf("\n------------------------\n");*/
@@ -181,7 +181,7 @@ void readServerStrH(int length, char* string, CServerStr* server_str) {
 
     total_lenght = getTotalLength(string);
     counter += 4;
-    while(counter != total_lenght + 5){
+    while (counter != total_lenght + 5) {
         counter += 4;
         //server_str->sec[k] = (string[counter + 0] << 24) | (string[counter + 1] << 16) | (string[counter + 2] << 8) | string[counter + 3];
         server_str->sec[k] = getLength(string + counter);
@@ -216,7 +216,7 @@ void readServerStr(int length, char* string, CServerStr* server_str) {
     int counter = 0;
     int total_lenght = 0;
     /*printf("Reading from server:\n");
-    for(j = 0; j < length; j++) {
+    for (j = 0; j < length; j++) {
         printf("%X ", string[j]);
     }
     printf("\n------------------------\n");*/
@@ -228,12 +228,12 @@ void readServerStr(int length, char* string, CServerStr* server_str) {
     counter += 4;
 
     int flagRM = 0;
-    if(string[0] == 'r' || string[0] == 'm'){
+    if (string[0] == 'r' || string[0] == 'm') {
         counter += 4;
         flagRM = 1;
     }
 
-    if(flagRM){
+    if (flagRM) {
         //server_str->sec[k] = (string[counter + 0] << 24) | (string[counter + 1] << 16) | (string[counter + 2] << 8) | string[counter + 3];
         server_str->sec[0] = getLength(string + counter);
         counter += 4;
@@ -243,7 +243,7 @@ void readServerStr(int length, char* string, CServerStr* server_str) {
     }
 
     // Форматирование строки
-    while(counter != total_lenght + 5) {
+    while (counter != total_lenght + 5) {
         int len = getStringLenghtFromMessage(string, server_str->number_of_str + flagRM);
         counter += 4;
         memcpy(server_str->text[server_str->number_of_str], getStringFromMessage(string, server_str->number_of_str + flagRM), len);
@@ -253,15 +253,15 @@ void readServerStr(int length, char* string, CServerStr* server_str) {
     }
 }
 
-void writeL(CServerStr* server_str){
+void writeL(CServerStr* server_str) {
     int i;
     printf("List of online users:\n");
-    for(i = 0; i < server_str->number_of_str; i += 2){
+    for (i = 0; i < server_str->number_of_str; i += 2) {
         printf("user_id: %s login: %s\n", server_str->text[i], server_str->text[i + 1]);
     }
 }
 
-void writeR(CServerStr* server_str){
+void writeR(CServerStr* server_str) {
     int i;
     printf("Message from server: \n");
     printTime(server_str->sec[0]);
@@ -271,10 +271,10 @@ void writeR(CServerStr* server_str){
     printf("\n");
 }
 
-void writeH(CServerStr* server_str){
+void writeH(CServerStr* server_str) {
     int i = 0;
     printf("History:\n");
-    for (i = 0; i < server_str->number_of_str; i += 2){
+    for (i = 0; i < server_str->number_of_str; i += 2) {
         printTime(server_str->sec[0]);
         //printf("time: sec %ld mic %ld\n", server_str->sec[i], server_str->mic[i + 1]);
         printf("from user: %s\n", server_str->text[i]);
@@ -287,7 +287,7 @@ void writeK(CServerStr* server_str) {
     printf("You are kicked with reason: %s\n", server_str->text[0]);
 }
 
-void writeM(CServerStr* server_str){
+void writeM(CServerStr* server_str) {
     int i;
     printTime(server_str->sec[0]);
     //printf("time: sec %ld mic %ld\n", server_str->sec[0], server_str->mic[0]);
@@ -322,7 +322,7 @@ void* recvMessage(void* args) {
     pthread_t thread = arg->thread;
     int socket_id = *(int*)socket_desc;
     char buffer[BUF_SIZE];
-    for(;;) {
+    for (;;) {
         int count = recv(socket_id, buffer, BUF_SIZE, 0); 
         CServerStr server_str;
         server_str.number_of_str = 0;
@@ -365,13 +365,13 @@ void* recvMessage(void* args) {
             free(socket_desc);
             exit(EXIT_SUCCESS);
             //int temp = pthread_cancel(thread);
-            /*if(temp != 0) {
+            /*if (temp != 0) {
                 fprintf(stderr, "pthread_cancel() failed\n");
             }*/
             return;
         }
         /*printf("free2\n");
-        for(i = 0; i < server_str.number_of_str; i++) {
+        for (i = 0; i < server_str.number_of_str; i++) {
             free(server_str.text[i]);
         }*/
     }
@@ -392,16 +392,16 @@ void processConnection(int socket_id) {
     printf("Возможные команды: e (= exit), r (= regular), i (= login), o (= logout), h (= history), l (= list), k (= kick)\n");
 
     int status = pthread_create(&thread, NULL, sendMessage, (void*) new_sock);
-    if(status == -1) {
+    if (status == -1) {
         fprintf(stderr, "Could not create thread\n");
         return;
     }
     int status1 = pthread_create(&thread1, NULL, recvMessage, (void*) &args);
-    if(status1 == -1) {
+    if (status1 == -1) {
         fprintf(stderr, "Could not create thread\n");
         return;
     }
-    for(;;){
+    for (;;) {
 
     }
 }
