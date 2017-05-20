@@ -25,8 +25,8 @@ void addNewUser(int socket, int thread, char* login, char* password, CServerMood
 // Возращаем позицию + 1
 int isAlredyRegistreted(CServerMood* server_mood, char* login) {
     int i;
-    for (i = 0; i < server_mood->number_of_users; i++){
-        if (!strcmp(login, server_mood->users[i].login)){
+    for (i = 0; i < server_mood->number_of_users; i++) {
+        if (!strcmp(login, server_mood->users[i].login)) {
             return i + 1;
         }
     }
@@ -36,7 +36,7 @@ int isAlredyRegistreted(CServerMood* server_mood, char* login) {
 void sendMessageToOnlineUsers(CServerMood* server_mood, char* message, int message_size) {
     pthread_mutex_lock(&data_mutex);
     int i;
-    for (i = 0; i < message_size; i++){
+    for (i = 0; i < message_size; i++) {
 
     }
     for (i = 0; i < server_mood->number_of_users; ++i) {
@@ -79,7 +79,7 @@ int statusR(CClientStr* client_str, CServerMood* server_mood, int socket, CUserI
     size_t message_size = serverConstructingMessage(message, text, 4);
     
     /*printf("\nstatusRmessage:\n");
-    for ( i = 0; i < message_size; i++){
+    for ( i = 0; i < message_size; i++) {
         printf("%X ", message[i]);
     }
     printf("server_mood->mes_in_history_counter: %d,  message_size: %d\n", server_mood->mes_in_history_counter, message_size);
@@ -106,7 +106,7 @@ int statusL(CClientStr* client_str, CServerMood* server_mood, int socket, CUserI
     int k;
 
     pthread_mutex_lock(&data_mutex);
-    for (i = 0; i < server_mood->number_of_users; ++i){
+    for (i = 0; i < server_mood->number_of_users; ++i) {
         if (server_mood->users[i].online) {
             IntToStr(text[j], server_mood->users[i].user_id);
             j++;
@@ -118,7 +118,7 @@ int statusL(CClientStr* client_str, CServerMood* server_mood, int socket, CUserI
     pthread_mutex_unlock(&data_mutex);
     char message[MAXLENGTH];
     size_t message_size = serverConstructingMessage(message, text, j);
-    /*for(j = 0; j < message_size; j++) {
+    /*for (j = 0; j < message_size; j++) {
         printf("%X ", message[j]);
     }
     printf("\n");*/
@@ -164,7 +164,7 @@ int statusI(CClientStr* client_str, CServerMood* server_mood, int socket, int th
     pthread_mutex_lock(&data_mutex);
     // Если пользователь с таким же login уже зарегистрирован.
     int temp = isAlredyRegistreted(server_mood, client_str->text[0]);
-    if (temp){
+    if (temp) {
         temp--;
         if (!strcmp(client_str->text[1], server_mood->users[temp].password) && !server_mood->users[temp].online) {
             server_mood->users[temp].online = 1;
@@ -189,7 +189,7 @@ int statusI(CClientStr* client_str, CServerMood* server_mood, int socket, int th
 int statusH(CClientStr* client_str, CServerMood* server_mood, int socket, CUserInfo* user_info, int number_of_mes) {
     //printf("statusH\n");
     if (number_of_mes > server_mood->mes_in_history_counter ||
-        client_str->number_of_str != 1){
+        client_str->number_of_str != 1) {
         return 6;
     }
     char* info;
@@ -207,14 +207,14 @@ int statusH(CClientStr* client_str, CServerMood* server_mood, int socket, CUserI
     for (i = 0; i < number_of_mes; i++) {
         total_length += getTotalLength(server_mood->history[i]);
 
-        for(j = 0; j < 3; j++){
+        for (j = 0; j < 3; j++) {
             info = getStringFromMessage(server_mood->history[i], j);
-            if(j != 0) {
+            if (j != 0) {
 
                 strcpy(text[i * 3 + j + 1], info);
 
             } else {
-                for (k = 0; k < 8; k++){
+                for (k = 0; k < 8; k++) {
     
                     text[i * 3 + j + 1][k] = info[k];
     
@@ -229,7 +229,7 @@ int statusH(CClientStr* client_str, CServerMood* server_mood, int socket, CUserI
 
     /*printf("\nserver message:\n");
 
-    for(k = 0; k < message_size; k++){
+    for (k = 0; k < message_size; k++) {
         printf("%X ", message[k]);
     }
     printf("\n");*/
@@ -261,7 +261,7 @@ int statusK(CClientStr* client_str, CServerMood* server_mood, int socket, CUserI
     size_t message_size = serverConstructingMessage(message, text, 2);
     
     /*printf("\nstatusK:\n");
-    for ( i = 0; i < message_size; i++){
+    for ( i = 0; i < message_size; i++) {
         printf("%X ", message[i]);
     }*/
     //pthread_mutex_lock(&data_mutex);
@@ -339,7 +339,7 @@ void generateMMes(CServerMood* server_mood, char reason, char* login, int user_i
 
    
     /*printf("\nM message7: \n");
-    for(i = 0; i < message_size; i++){
+    for (i = 0; i < message_size; i++) {
         printf("%X ", message[i]);
     }
     printf("\n");
@@ -371,25 +371,25 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
     //printf("total_lenght: %d lenght: %d\n", total_lenght, length);
 
     int flagH = 0;
-    if (string[0] == 'h'){
+    if (string[0] == 'h') {
         flagH = 1;
         //printf("flagH: %d\n", flagH);
     }
 
     int flagK = 0;
-    if (string[0] == 'k'){
+    if (string[0] == 'k') {
         flagK = 1;
         //printf("flagK: %d\n", flagK);
     }
 
     // Форматирование строки
-    while(i < total_lenght) {
+    while (i < total_lenght) {
         str_number = client_str.number_of_str;
         if (client_str.number_of_str > 2) {
             return 6;
         }
 
-        if (flagH){
+        if (flagH) {
             //printf("total_lenght: %d\n", total_lenght);
             number_of_mes = getLength(getStringFromMessage(string, str_number));
             client_str.number_of_str += 1;
@@ -398,7 +398,7 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
             break;
         }
 
-        if (flagK){
+        if (flagK) {
             //printf("total_lenght: %d\n", total_lenght);
             kick_id = getLength(getStringFromMessage(string, str_number));
             str_number += 1;
@@ -426,7 +426,7 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
                 return 2;
             }  
             temp = statusR(&client_str, server_mood, socket, user_info);
-            if (temp != 0){
+            if (temp != 0) {
                 return temp;
             }
             break;
@@ -436,7 +436,7 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
                 return 4;
             }
             temp = statusI(&client_str, server_mood, socket, thread, user_info);
-            if (temp != 0){
+            if (temp != 0) {
                 return temp;
             }
             user_info->online = 1;
@@ -447,7 +447,7 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
                 return 2;
             }
             temp = statusO(&client_str, server_mood, socket, user_info);
-            if (temp != 0){
+            if (temp != 0) {
                 return temp;
             }
             generateMMes(server_mood, 'o', user_info->login, user_info->user_id);
@@ -458,7 +458,7 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
                 return 2;
             }
             temp = statusH(&client_str, server_mood, socket, user_info, number_of_mes);
-            if (temp != 0){
+            if (temp != 0) {
                 return temp;
             }
             break;
@@ -467,7 +467,7 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
                 return 2;
             }
             temp = statusL(&client_str, server_mood, socket, user_info);
-            if (temp != 0){
+            if (temp != 0) {
                 return temp;
             }
             break;
@@ -476,7 +476,7 @@ int readClientString(char* string, int length, int socket, int thread, CServerMo
                 return 2;
             }
             temp = statusK(&client_str, server_mood, socket, user_info, kick_id);
-            if (temp != 0){
+            if (temp != 0) {
                 return temp;
             }
             char* kick_login;
