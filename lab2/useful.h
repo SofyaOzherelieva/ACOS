@@ -97,7 +97,7 @@ size_t serverConstructingMessage(char* string, char text[][MINLENGTH], int numbe
     size_t string_length = 0;
     int flagRMH = 0;
 
-    if(text[0][0] == 'r' || text[0][0] == 'm' || text[0][0] == 'h'){
+    if (text[0][0] == 'r' || text[0][0] == 'm' || text[0][0] == 'h') {
         flagRMH = 1;
     }
     //printf("flagRMH %d\n", flagRMH);
@@ -108,10 +108,10 @@ size_t serverConstructingMessage(char* string, char text[][MINLENGTH], int numbe
     intToBigEndian(string + string_length, 0);
 
     string_length += 4;
-    /*if(flagRMH){
+    /*if (flagRMH) {
         intToBigEndian(string + string_length, 8);
         string_length += 4;
-        for(i = 0; i <8; i++){
+        for (i = 0; i <8; i++) {
             string[string_length + i] = text[flagRMH][i];
         }
         string_length += 8;
@@ -120,11 +120,11 @@ size_t serverConstructingMessage(char* string, char text[][MINLENGTH], int numbe
     for (i = 1; i < number_of_str; i++) {
         flag = 0;
         //printf("i / 3 %d\n", i % 3);
-        if(flagRMH && (i % 3 == 1)) {
+        if (flagRMH && (i % 3 == 1)) {
             //printf("time\n");
             intToBigEndian(string + string_length, 8);
             string_length += 4;
-            for(j = 0; j < 8; j++){
+            for (j = 0; j < 8; j++) {
                 string[string_length + j] = text[i][j];
             }
             string_length += 8;
@@ -135,7 +135,7 @@ size_t serverConstructingMessage(char* string, char text[][MINLENGTH], int numbe
             intToBigEndian(string + string_length, strlen(text[i]) - flag);
             string_length += 4; 
 
-            for(j = 0; j < strlen(text[i]) - flag; j++) {
+            for (j = 0; j < strlen(text[i]) - flag; j++) {
                 string[j + string_length] = text[i][j];
             }
             string_length += strlen(text[i]) - flag;
@@ -147,15 +147,15 @@ size_t serverConstructingMessage(char* string, char text[][MINLENGTH], int numbe
     string[string_length + 1] = '\0';
 
     /*printf("\nserverConstructingMessage:\n");
-    for(i = 0; i < string_length; i++) {
+    for (i = 0; i < string_length; i++) {
         printf("%X ", string[i]);
     }*/
 
     return string_length;
 }
 
-int min(int x, int y){
-    if(x < y) {
+int min(int x, int y) {
+    if (x < y) {
         return x;
     } else {
         return y;
@@ -179,12 +179,12 @@ size_t clientConstructingMessage(char* string, char* text[], int number_of_str) 
     intToBigEndian(string + string_length, 0);
     string_length += 4;
 
-    if(string[0] == 'k' || string[0] == 'h'){
+    if (string[0] == 'k' || string[0] == 'h') {
         flagKH = 1;
     }
 
     /*printf("\nclientConstructingMessage:\n");
-    for(i = 0; i < string_length; i++) {
+    for (i = 0; i < string_length; i++) {
         printf("%X ", string[i]);
     }*/
 
@@ -209,12 +209,12 @@ size_t clientConstructingMessage(char* string, char* text[], int number_of_str) 
             string_length += strlen(text[i]) - flag;
         }
         /*printf("\nclientConstructingMessage:\n");
-        for(j = 0; j < string_length; j++) {
+        for (j = 0; j < string_length; j++) {
             printf("%X ", string[j]);
         }*/
     }
 
-    while(string[string_length - 1] == 0) {
+    while (string[string_length - 1] == 0) {
         string_length--;
     }
 
@@ -222,7 +222,7 @@ size_t clientConstructingMessage(char* string, char* text[], int number_of_str) 
     intToBigEndian(string + 1, string_length - 5);
 
     /*printf("\nclientConstructingMessage:\n");
-    for(i = 0; i < string_length; i++) {
+    for (i = 0; i < string_length; i++) {
         printf("%X ", string[i]);
     }*/
 
