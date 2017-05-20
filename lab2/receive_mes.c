@@ -18,7 +18,7 @@ void* processConnection(void* args) {
     int thread = arg->thread_id;
 
 
-    if(server_mood->root == 0) {
+    if (server_mood->root == 0) {
             server_mood->root = socket;
     }
     //printf("root: %d\n", server_mood->root);
@@ -32,7 +32,7 @@ void* processConnection(void* args) {
         
         /*printf("%d\n", count);
         printf("\nbuffer: \n");
-        for( i = 0; i < count; i++){
+        for ( i = 0; i < count; i++) {
             printf("%X ", buffer[i]);
         }
         printf("\n");
@@ -45,7 +45,7 @@ void* processConnection(void* args) {
             return;
         }
 
-        if(count == 0) { // Если посылается ^C )
+        if (count == 0) { // Если посылается ^C )
             generateMMes(server_mood, 'd', user_info.login, user_info.user_id);
             fprintf(stdout, "Client disconnected\n");
             user_info.online = 0;
@@ -63,12 +63,11 @@ void* processConnection(void* args) {
             string[u] = buffer[u];
         }
 
-        int result = readClientString
-        (string, count, socket, thread, server_mood, &user_info);
+        int result = readClientString(string, count, socket, thread, server_mood, &user_info);
 
         //printf("result: %d\n", result);
 
-        if(result) {
+        if (result) {
             generateStatusMes(socket, result);
         }
 
