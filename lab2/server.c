@@ -17,7 +17,7 @@ void server_initialization(CServerMood* server_mood) {
     server_mood->thread_counter = 0;
 }
 
-int addRoot(CServerMood* server_mood, char* password){
+int addRoot(CServerMood* server_mood, char* password) {
     int i;
     // Check password for correctness:
     if (strlen(password) < 2 || strlen(password) > 31) {
@@ -68,7 +68,7 @@ int main() {
     ssize_t read;
     read = getline(&line, &len, stdin);
     line[read - 1] = 0;
-    while(addRoot(&server_mood, line)) {
+    while (addRoot(&server_mood, line)) {
         read = getline(&line, &len, stdin);
     }
 
@@ -86,7 +86,7 @@ int main() {
         return 1;
     }
     
-    for(;;) {
+    for (;;) {
         struct sockaddr client_addr;
         int addr_len = sizeof(client_addr);
         int client_sock = accept(sockid, &client_addr, &addr_len);
@@ -107,7 +107,7 @@ int main() {
         args.thread_id = server_mood.thread_counter;
 
         status = pthread_create(&server_mood.threads[server_mood.thread_counter++] , NULL ,  processConnection, (void*) &args);
-        if(status == -1) {
+        if (status == -1) {
             fprintf(stderr, "Could not create thread\n");
             return 5;
         }
