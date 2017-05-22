@@ -323,7 +323,9 @@ void* recvMessage(void* args) {
     int socket_id = *(int*)socket_desc;
     char buffer[BUF_SIZE];
     for (;;) {
-        int count = recv(socket_id, buffer, BUF_SIZE, 0); 
+        int count = recv(socket_id, buffer, 5, 0); 
+        int total_lenght = getTotalLength(buffer);
+        count = recv(socket_id, buffer + 5, total_lenght, 0);
         CServerStr server_str;
         server_str.number_of_str = 0;
 
